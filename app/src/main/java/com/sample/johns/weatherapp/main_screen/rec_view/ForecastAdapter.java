@@ -14,6 +14,10 @@ import java.util.ArrayList;
  * Created by doktor on 10/18/16.
  */
 
+/**
+ * given enough time, we would map images to descriptions and show a nice image for
+ * the type of day it is outside, however time is limited
+ */
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastItemView> {
 
     private ArrayList<ForecastList> forecast = new ArrayList<>();
