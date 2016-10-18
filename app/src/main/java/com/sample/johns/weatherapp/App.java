@@ -19,7 +19,9 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LeakCanary.install(this);
+        if (BuildConfig.USE_LEAK_CANARY) {
+            LeakCanary.install(this);
+        }
         weatherComponent = initialize();
     }
 
