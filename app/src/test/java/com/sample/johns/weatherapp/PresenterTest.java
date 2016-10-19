@@ -20,6 +20,10 @@ import retrofit2.mock.Calls;
 
 /**
  * Created by doktor on 10/19/16.
+ *
+ * The idea with MVP is to test presenters without worrying about the views
+ * We just want to check that what we expect to happen (methods from view interface actually get called
+ * depending on success or failure) actually happens
  */
 
 @RunWith(JUnit4.class)
