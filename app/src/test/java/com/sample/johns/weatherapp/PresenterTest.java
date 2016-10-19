@@ -14,6 +14,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
+
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.http.Query;
 import retrofit2.mock.Calls;
@@ -29,9 +34,10 @@ import retrofit2.mock.Calls;
 @RunWith(JUnit4.class)
 public class PresenterTest {
     //could use mockito to mock api
-    //also would want to test the fail case which can be mocked the same way here
 
     private WeatherApi api;
+
+    private WeatherApi badApi;
 
     private ForecastPresenter presenter;
 
@@ -39,7 +45,11 @@ public class PresenterTest {
 
     private boolean currentWeatherViewCalled = false;
 
+    private boolean failCurrentWeatherCalled = false;
+
     private boolean fiveDayForecastViewCalled = false;
+
+    private boolean fail5dayForecastCalled = false;
 
     private Location location = new Location(Context.LOCATION_SERVICE);
 
@@ -68,6 +78,24 @@ public class PresenterTest {
             }
         };
 
+        badApi = new WeatherApi() {
+            @Override
+            public Call<CurrentWeather> getCurrentWeather(@Query("lat") double lat,
+                                                          @Query("lon") double lon,
+                                                          @Query("units") String imperial,
+                                                          @Query("APPID") String appId) {
+                return Calls.failure(new IOException("fail"));
+            }
+
+            @Override
+            public Call<ForecastResponse> get5dayForecast(@Query("lat") double lat,
+                                                          @Query("lon") double lon,
+                                                          @Query("units") String imperial,
+                                                          @Query("APPID") String appId) {
+                return Calls.failure(new IOException("fail"));
+            }
+        };
+
         view = new ForecastView() {
             @Override
             public void gotCurrentWeatherSuccess(CurrentWeather currentWeather) {
@@ -76,7 +104,7 @@ public class PresenterTest {
 
             @Override
             public void currentWeatherFailure(String tmsg) {
-                //this should be tested also
+                failCurrentWeatherCalled = true;
             }
 
             @Override
@@ -86,23 +114,40 @@ public class PresenterTest {
 
             @Override
             public void forecastFailed(String msg) {
-                //this should be tested also
+                fail5dayForecastCalled = true;
             }
         };
-
-        presenter = new ForecastPresenter(api);
-        presenter.attachView(view);
     }
 
     @Test
     public void testCurrentWeather(){
+        presenter = new ForecastPresenter(api);
+        presenter.attachView(view);
         presenter.getCurrentWeather(location);
         Assert.assertTrue(currentWeatherViewCalled);
     }
 
     @Test
     public void testFiveDayForecast(){
+        presenter = new ForecastPresenter(api);
+        presenter.attachView(view);
         presenter.get5DayForecast(location);
         Assert.assertTrue(fiveDayForecastViewCalled);
+    }
+
+    @Test
+    public void failCurrentWeather(){
+        presenter = new ForecastPresenter(badApi);
+        presenter.attachView(view);
+        presenter.getCurrentWeather(location);
+        Assert.assertTrue(failCurrentWeatherCalled);
+    }
+
+    @Test
+    public void fail5DayForecast(){
+        presenter = new ForecastPresenter(badApi);
+        presenter.attachView(view);
+        presenter.get5DayForecast(location);
+        Assert.assertTrue(fail5dayForecastCalled);
     }
 }
