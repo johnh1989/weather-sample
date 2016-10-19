@@ -29,6 +29,10 @@ android {
             buildConfigField "boolean", "USE_LEAK_CANARY", "false"
         }
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -49,6 +53,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.hannesdorfmann.mosby:mvp:2.0.1'
+    testCompile 'com.squareup.retrofit2:retrofit-mock:2.1.0'
 
     //leak canary
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4'

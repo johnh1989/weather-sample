@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 import com.sample.johns.weatherapp.App;
+import com.sample.johns.weatherapp.WeatherApi;
 import com.sample.johns.weatherapp.main_screen.rec_view.ForecastAdapter;
 import com.sample.johns.weatherapp.LocationProvider;
 import com.sample.johns.weatherapp.R;
@@ -49,6 +50,9 @@ public class MainActivityFragment extends MvpFragment<ForecastView, ForecastPres
     private ForecastAdapter adapter;
 
     @Inject
+    WeatherApi api;
+
+    @Inject
     LocationProvider locationProvider;
 
     @BindView(R.id.tv_city_state)
@@ -76,7 +80,7 @@ public class MainActivityFragment extends MvpFragment<ForecastView, ForecastPres
     @NonNull
     @Override
     public ForecastPresenter createPresenter() {
-        return new ForecastPresenter();
+        return new ForecastPresenter(api);
     }
 
     @Override

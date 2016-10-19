@@ -25,11 +25,10 @@ public class ForecastPresenter extends MvpBasePresenter<ForecastView> {
 
     private static final String API_KEY = "7e4d8479deac715bb7cefb6821322ac3";
 
-    @Inject
-    WeatherApi api;
+    private final WeatherApi api;
 
-    public ForecastPresenter(){
-        App.getInjector().inject(this);
+    public ForecastPresenter(WeatherApi api){
+        this.api = api;
     }
 
     public void getCurrentWeather(Location location){
